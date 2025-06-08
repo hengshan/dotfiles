@@ -1,0 +1,123 @@
+[user]
+    # 用户信息 - 在首次运行时会提示设置
+    name =  hengshan
+    email = hengshan.li@gmail.com
+
+[core]
+    editor = nvim               # 默认编辑器（commit 时使用）
+    autocrlf = input            # 换行符处理（input=LF提交，CRLF检出）
+    excludesfile = ~/.gitignore_global  # 全局 gitignore 文件路径
+    pager = less -FRSX          # 分页器设置（-F=单页不翻页，-R=保留颜色）
+
+[init]
+    defaultBranch = main
+
+[pull]
+    rebase = false
+
+[push]
+    default = simple            # 只推送当前分支（匹配同名远程分支）
+    followTags = true           # 推送时自动包含关联的标签
+
+[fetch]
+    prune = true
+
+[color]
+    ui = auto                   # 自动启用颜色输出
+    branch = auto               # 分支命令着色
+    diff = auto                 # diff 输出着色
+    status = auto               # status 输出着色
+
+[color "branch"]
+    current = yellow reverse
+    local = yellow
+    remote = green
+
+[color "diff"]
+    meta = yellow bold
+    frag = magenta bold
+    old = red bold
+    new = green bold
+
+[color "status"]
+    added = yellow
+    changed = green
+    untracked = cyan
+
+[alias]
+    # 基础别名
+    st = status
+    ci = commit
+    co = checkout
+    br = branch
+    
+    # 日志别名
+    lg = log --oneline --graph --decorate # 紧凑图形化日志
+    lga = log --oneline --graph --decorate --all # 显示所有分支
+    ll = log --pretty=format:'%C(yellow)%h%Creset -%C(red)%d%Creset %s %C(green)(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit # 自定义美化日志（含作者和时间）
+    
+    # 差异别名
+    df = diff
+    dc = diff --cached # 比较暂存区与最新提交
+    
+    # 分支操作
+    bra = branch -a # Lists both local and remote branches.
+    brd = branch -d # 安全删除分支
+    brD = branch -D # 强制删除分支
+    
+    # 远程操作
+    rem = remote -v
+    
+    # 暂存操作
+    unstage = reset HEAD --
+    uncommit = reset --soft HEAD^
+    
+    # 快速操作
+    amend = commit --amend # 修改最后一次提交
+    wip = commit -am "WIP" # 快速提交为 WIP（Work In Progress）
+    
+    # 清理操作
+    cleanup = "!git branch --merged | grep -v '\\*\\|main\\|master\\|develop' | xargs -n 1 git branch -d" # 清理已合并分支
+    
+    # 查找操作
+    find = "!git ls-files | grep -i"
+    grep = grep -Ii
+    
+    # 统计信息
+    count = shortlog -sn
+    
+    # 同步操作
+    sync = !git pull && git push # 同步当前分支
+    
+    # 撤销操作
+    undo = reset HEAD~1 --mixed # 撤销最后一次提交（保留修改）
+    
+    # 查看文件历史
+    filelog = log -u
+    
+    # 快速添加所有文件并提交
+    ac = !git add -A && git commit
+    
+    # 查看最近的提交
+    recent = for-each-ref --count=10 --sort=-committerdate refs/heads/ --format="%(refname:short)" # 显示最近10个分支
+
+[diff]
+    tool = vimdiff
+
+[merge]
+    tool = vimdiff
+
+[help]
+    autocorrect = 1 # 命令输错时自动纠正（延迟1秒)
+
+[rerere]
+    enabled = true # 启用冲突解决记录（解决重复冲突时自动应用方案）
+
+[credential]
+    helper = cache --timeout=3600 # 缓存密码1小时（内存中）
+
+[filter "lfs"]
+    clean = git-lfs clean -- %f # LFS 文件清理钩子
+    smudge = git-lfs smudge -- %f # LFS 文件检出钩子
+    process = git-lfs filter-process # 强制 LFS 过滤器
+    required = true
