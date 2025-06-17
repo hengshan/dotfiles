@@ -24,7 +24,7 @@ log "Dotfiles 目录: $DOTFILES_DIR"
 mkdir -p "$BACKUP_DIR"
 
 # 备份并创建符号链接的函数
-lrm /home/hank/.ssh/configink_file() {
+link_file() {
     local src="$1"
     local dest="$2"
     local dest_dir=$(dirname "$dest")
