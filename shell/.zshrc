@@ -202,8 +202,8 @@ typeset -U PATH LD_LIBRARY_PATH MANPATH FPATH
 # 现在可以安全地添加路径，不用担心重复
 export PATH="/snap/bin:$HOME/.local/bin:$PATH"
 export PATH="/opt/nvim-linux-x86_64/bin:${PATH}"
-export PATH="/usr/local/cuda-12.9/bin:${PATH}"
-export LD_LIBRARY_PATH="/usr/local/cuda-12.9/lib64:${LD_LIBRARY_PATH}"
+export PATH="/usr/local/cuda/bin:${PATH}"
+export LD_LIBRARY_PATH="/usr/local/cuda/lib64:${LD_LIBRARY_PATH}"
 
 # MicroK8s
 if command -v microk8s &> /dev/null; then
