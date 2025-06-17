@@ -26,7 +26,10 @@ install_miniconda() {
         log "Miniconda 已安装，跳过"
         return
     fi
-    
+    if [ -d "$HOME/miniconda3" ] || [ -d "$HOME/anaconda3" ]; then
+        log "Miniconda/Anaconda 已安装"
+	return
+    fi 
     log "安装 Miniconda..."
     cd /tmp
     wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh
@@ -44,8 +47,37 @@ install_miniconda() {
     log "Miniconda 安装完成"
 }
 
+# 安装 Rust first. Before UV.
+install_rust() {
+    if command_exists rustc; then
+        log "Rust 已安装，跳过"
+        return
+    fi
+    
+    # 检查 .cargo 目录是否存在
+    if [ -d "$HOME/.cargo" ]; then
+        log "Rust 目录已存在, 跳过"
+	return
+    fi	
+
+    log "安装 Rust..."
+    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+    source "$HOME/.cargo/env"
+    
+    # 安装常用组件
+    rustup component add clippy rustfmt
+    
+    log "Rust 安装完成"
+}
+
 # 安装 UV (Python 包管理器)
 install_uv() {
+    # 检查 UV 是否已安装在常见位置
+    if [ -f "$HOME/.cargo/bin/uv" ] || [ -f "$HOME/.local/bin/uv" ]; then
+        log "UV 目录已存在, 跳过"
+	return
+    fi
+
     if command_exists uv; then
         log "UV 已安装，跳过"
         return
@@ -57,22 +89,6 @@ install_uv() {
     log "UV 安装完成"
 }
 
-# 安装 Rust
-install_rust() {
-    if command_exists rustc; then
-        log "Rust 已安装，跳过"
-        return
-    fi
-    
-    log "安装 Rust..."
-    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
-    source "$HOME/.cargo/env"
-    
-    # 安装常用组件
-    rustup component add clippy rustfmt
-    
-    log "Rust 安装完成"
-}
 
 # 安装 NVM 和 Node.js
 install_node() {
@@ -143,8 +159,8 @@ main() {
     
     # 按顺序安装各个工具
     install_miniconda
-    install_uv
     install_rust
+    install_uv
     install_node
     install_docker
     

@@ -24,7 +24,7 @@ log "Dotfiles 目录: $DOTFILES_DIR"
 mkdir -p "$BACKUP_DIR"
 
 # 备份并创建符号链接的函数
-link_file() {
+lrm /home/hank/.ssh/configink_file() {
     local src="$1"
     local dest="$2"
     local dest_dir=$(dirname "$dest")
@@ -74,7 +74,23 @@ link_config_files() {
     if [ -f "$DOTFILES_DIR/config/.tmux.conf" ]; then
         link_file "$DOTFILES_DIR/config/.tmux.conf" "$HOME/.tmux.conf"
     fi
-    
+
+    # SSH 配置
+    if [ -f "$DOTFILES_DIR/config/ssh/config" ]; then
+        # 确保 ~/.ssh 目录存在且权限正确
+        mkdir -p "$HOME/.ssh"
+        chmod 700 "$HOME/.ssh"
+        log "创建SSH配置链接..."
+        link_file "$DOTFILES_DIR/config/ssh/config" "$HOME/.ssh/config"
+        # SSH 配置文件需要特定权限
+        chmod 600 "$HOME/.ssh/config"
+    fi
+   
+    # docker mirror 配置
+    if [ -f "$DOTFILES_DIR/config/docker/daemon.json" ]; then
+        log "创建docker daemon配置链接..."
+        link_file "$DOTFILES_DIR/config/docker/daemon.json" "etc/docker/daemon.json"
+    fi
     log "配置文件链接完成"
 }
 

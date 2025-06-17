@@ -107,9 +107,6 @@ find "$DOTFILES_DIR/scripts" -name "*.sh" -exec chmod +x {} \; 2>/dev/null || tr
 
 header "安装完成!"
 log "备份文件保存在: $BACKUP_DIR"
-log "请运行以下命令使 Zsh 配置生效:"
-log "  source ~/.zshrc"
-log "或者重新打开终端"
 
 # 可选：自动切换到 zsh
 if command -v zsh &> /dev/null; then
@@ -118,8 +115,15 @@ if command -v zsh &> /dev/null; then
     echo
     if [[ $REPLY =~ ^[Yy]$ ]]; then
         chsh -s $(which zsh)
-        log "已切换默认 shell 为 Zsh，请重新登录或重启终端"
+        log "已切换默认 shell 为 Zsh"
+	# 直接启动 zsh
+        log "正在启动 Zsh..."
+        log "享受你的新开发环境吧! 🎉"
+        exec zsh
     fi
 fi
 
+log "请运行以下命令使 Zsh 配置生效:"
+log " zsh"
+log "或者重新打开终端"
 log "享受你的新开发环境吧! 🎉"

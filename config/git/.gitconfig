@@ -102,10 +102,24 @@
     recent = for-each-ref --count=10 --sort=-committerdate refs/heads/ --format="%(refname:short)" # 显示最近10个分支
 
 [diff]
-    tool = vimdiff
+    tool = nvimdiff
+    colorMoved = zebra          # Better moved line detection
+    algorithm = patience        # Better diff algorithm
+
+[difftool]
+    prompt = false
+
+[difftool "nvimdiff"]
+    cmd = nvim -d "$LOCAL" "$REMOTE"
 
 [merge]
-    tool = vimdiff
+    tool = nvimdiff
+
+[mergetool]
+    prompt = false
+
+[mergetool "nvimdiff"]
+    cmd = nvim -d "$LOCAL" "$BASE" "$REMOTE" "$MERGED" -c '$wincmd w' -c 'wincmd J'
 
 [help]
     autocorrect = 1 # 命令输错时自动纠正（延迟1秒)

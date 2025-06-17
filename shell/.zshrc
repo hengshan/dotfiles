@@ -32,16 +32,20 @@ zstyle ':omz:update' frequency 7
 
 # 加载 Oh My Zsh
 source $ZSH/oh-my-zsh.sh
+# Powerlevel10k 配置
+[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
 # ===== 用户配置 =====
 
 # 语言环境
-export LANG=en_US.UTF-8
-export LC_ALL=en_US.UTF-8
+# export LANG=en_US.UTF-8
+# export LC_ALL=en_US.UTF-8
 
 # 编辑器设置
 export EDITOR='nvim'
 export VISUAL='nvim'
+set -o vi # Enable vi keybindings for Zsh
+cd ~
 
 # ===== 开发环境配置 =====
 
@@ -68,17 +72,12 @@ fi
 # Docker
 if command -v docker &> /dev/null; then
     # Docker 补全
-    if [ -f /usr/share/bash-completion/completions/docker ]; then
-        source /usr/share/bash-completion/completions/docker
-    fi
+    fpath=($ZSH/completions $fpath)
+#     if [ -f /usr/share/bash-completion/completions/docker ]; then
+#         source /usr/share/bash-completion/completions/docker
+#     fi
 fi
 
-# MicroK8s
-if command -v microk8s &> /dev/null; then
-    alias mk='microk8s kubectl'
-    alias k='kubectl'
-    source <(microk8s kubectl completion zsh)  # 新增补全支持
-fi
 
 # ===== 别名设置 =====
 
@@ -138,7 +137,7 @@ fd() {
 }
 
 # 快速 grep
-gg() {
+ggg() {
     grep -r -i "$1" .
 }
 
@@ -185,6 +184,7 @@ autoload -U compinit && compinit
 zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'
 zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
 
+
 # ===== 加载自定义配置 =====
 DOTFILES_DIR="$HOME/.dotfiles"
 
@@ -196,5 +196,19 @@ DOTFILES_DIR="$HOME/.dotfiles"
 # 加载本地配置（不纳入版本控制）
 [ -f "$HOME/.zshrc.local" ] && source "$HOME/.zshrc.local"
 
-# Powerlevel10k 配置
-[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+# 让环境变量自动去重（zsh 特性）
+typeset -U PATH LD_LIBRARY_PATH MANPATH FPATH
+
+# 现在可以安全地添加路径，不用担心重复
+export PATH="/snap/bin:$HOME/.local/bin:$PATH"
+export PATH="/opt/nvim-linux-x86_64/bin:${PATH}"
+export PATH="/usr/local/cuda-12.9/bin:${PATH}"
+export LD_LIBRARY_PATH="/usr/local/cuda-12.9/lib64:${LD_LIBRARY_PATH}"
+
+# MicroK8s
+if command -v microk8s &> /dev/null; then
+    alias mk='microk8s kubectl'
+    alias k='kubectl'
+    source <(microk8s kubectl completion zsh)  # 新增补全支持
+fi
+export PATH="$PATH:$HOME/.local/share/gem/ruby/3.2.0/bin"

@@ -38,11 +38,11 @@ configure_apt_mirrors() {
     log "检测到 Ubuntu $ubuntu_version，配置 APT 国内镜像源..."
 
     # 备份原始源文件
-    if $is_ubuntu_24_04; then
-        sudo cp /etc/apt/sources.list.d/ubuntu.sources /etc/apt/sources.list.d/ubuntu.sources.backup.$(date +%Y%m%d_%H%M%S)
-    else
-        sudo cp /etc/apt/sources.list /etc/apt/sources.list.backup.$(date +%Y%m%d_%H%M%S)
-    fi
+#    if $is_ubuntu_24_04; then
+#        sudo cp /etc/apt/sources.list.d/ubuntu.sources /etc/apt/sources.list.d/ubuntu.sources.backup.$(date +%Y%m%d_%H%M%S)
+#    else
+#        sudo cp /etc/apt/sources.list /etc/apt/sources.list.backup.$(date +%Y%m%d_%H%M%S)
+#    fi
 
     # 配置清华大学镜像源（优先尝试）
     if $is_ubuntu_24_04; then
@@ -119,7 +119,6 @@ install_basic_packages() {
         wget \
         git \
         vim \
-        neovim \
         zsh \
         tmux \
         htop \
@@ -136,7 +135,7 @@ install_basic_packages() {
         ripgrep \
         fd-find \
         bat \
-        exa \
+        eza \
         fzf \
         silversearcher-ag \
         ncdu \
@@ -144,7 +143,32 @@ install_basic_packages() {
         tldr \
         rsync
     
+    log "installing neovim latesti version"
+    install_latest_neovim
+
     log "基础包安装完成"
+}
+
+install_latest_neovim() {
+    log "Installing latest Neovim from GitHub pre-built binaries..."
+
+    # Download and extract
+    curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim-linux-x86_64.tar.gz
+    sudo rm -rf /opt/nvim-linux-x86_64
+    sudo tar -C /opt -xzf nvim-linux-x86_64.tar.gz
+    rm nvim-linux-x86_64.tar.gz
+
+    # Ensure the bin path is in PATH for this session
+    export PATH="/opt/nvim-linux-x86_64/bin:$PATH"
+
+    # Add it permanently for future shells
+    SHELL_RC="$HOME/.zshrc"  # Change to .bashrc if using Bash
+    if ! grep -q "/opt/nvim-linux-x86_64/bin" "$SHELL_RC"; then
+      echo 'export PATH="/opt/nvim-linux-x86_64/bin:$PATH"' >> "$SHELL_RC"
+      log "Updated $SHELL_RC to include Neovim path."
+    fi
+
+    log "Neovim version installed: $(nvim --version | head -n 1)"
 }
 
 # 配置一些工具的别名
