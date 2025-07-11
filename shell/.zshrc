@@ -208,7 +208,12 @@ export LD_LIBRARY_PATH="/usr/local/cuda/lib64:${LD_LIBRARY_PATH}"
 # MicroK8s
 if command -v microk8s &> /dev/null; then
     alias mk='microk8s kubectl'
-    alias k='kubectl'
-    source <(microk8s kubectl completion zsh)  # 新增补全支持
+    alias mm='microk8s'
+    source <(kubectl completion zsh)  # 新增补全支持
 fi
 export PATH="$PATH:$HOME/.local/share/gem/ruby/3.2.0/bin"
+
+# Bun 配置
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"
+[ -s "/home/hank/.oh-my-zsh/completions/_bun" ] && source "/home/hank/.oh-my-zsh/completions/_bun"

@@ -1,15 +1,15 @@
 {
-  "insecure-registries": [
-    "localhost:32000"
-  ],
-  "registry-mirrors": [
-    "https://crpi-bsf44y57e53s52r3.cn-hangzhou.personal.cr.aliyuncs.com",
-    "https://docker.1ms.run"
-  ],
-  "runtimes": {
-    "nvidia": {
-      "args": [],
-      "path": "nvidia-container-runtime"
+    "insecure-registries": [
+        "localhost:32000"
+    ],
+    "registry-mirrors": [
+        "https://crpi-bsf44y57e53s52r3.cn-hangzhou.personal.cr.aliyuncs.com",
+        "https://docker.1ms.run"
+    ],
+    "runtimes": {
+        "nvidia": {
+            "args": [],
+            "path": "nvidia-container-runtime"
+        }
     }
-  }
 }
