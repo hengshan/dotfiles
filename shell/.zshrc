@@ -97,7 +97,7 @@ alias gp='git push'
 alias gl='git pull'
 alias gco='git checkout'
 alias gb='git branch'
-alias gd='git diff'
+alias gd='git difftool'
 alias glog='git log --oneline --graph --decorate'
 
 # 编辑器别名
@@ -113,7 +113,7 @@ alias du='du -h'
 alias free='free -h'
 
 # 开发别名
-alias py='python'
+alias py='python3'
 alias ipy='ipython'
 alias jl='jupyter lab'
 alias dc='docker compose'
@@ -217,3 +217,8 @@ export PATH="$PATH:$HOME/.local/share/gem/ruby/3.2.0/bin"
 export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
 [ -s "/home/hank/.oh-my-zsh/completions/_bun" ] && source "/home/hank/.oh-my-zsh/completions/_bun"
+
+# claude code
+alias cld="claude --dangerously-skip-permissions"
+alias clc="claude --continue"
+alias clr="claude --resume"
