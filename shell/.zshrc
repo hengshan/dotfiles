@@ -2,6 +2,10 @@
 # Path to your oh-my-zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
 
+setopt extended_glob   # 你已经需要的
+setopt glob_dots      # 让通配符匹配隐藏文件（以.开头的文件）
+setopt null_glob      # 如果没有匹配项，不报错而是返回空
+
 # 主题设置
 ZSH_THEME="powerlevel10k/powerlevel10k"
 
@@ -119,6 +123,16 @@ alias jl='jupyter lab'
 alias dc='docker compose'
 alias k='kubectl'
 
+# GPU 监控 (ML开发)
+alias gpu='nvidia-smi'
+alias gpuw='watch -n 1 nvidia-smi'
+alias gpum='nvidia-smi --query-gpu=memory.used,memory.total --format=csv,noheader,nounits'
+
+# 系统监控
+alias mem='free -h && echo && ps aux --sort=-%mem | head -10'
+alias ports='netstat -tulpn | grep LISTEN'
+alias procs='ps aux --sort=-%cpu | head -15'
+
 # ===== 自定义函数 =====
 
 # 创建目录并进入
@@ -172,6 +186,30 @@ dev() {
     fi
 }
 
+# ML项目快速搭建
+mlproject() {
+    if [ -z "$1" ]; then
+        echo "用法: mlproject <项目名>"
+        return 1
+    fi
+    
+    mkdir -p "$1"/{data,notebooks,src,models,configs,tests}
+    cd "$1"
+    uv init
+    echo "# ML Project: $1" > README.md
+    echo "data/
+*.pyc
+__pycache__/
+models/*.pkl
+.env
+.DS_Store
+*.log" > .gitignore
+    
+    echo "✅ ML项目 '$1' 创建成功！"
+    echo "📁 目录结构: data/ notebooks/ src/ models/ configs/ tests/"
+    echo "🚀 使用 'uv add pandas numpy scikit-learn' 添加依赖"
+}
+
 # ===== 历史记录配置 =====
 HISTSIZE=10000
 SAVEHIST=10000
@@ -222,3 +260,5 @@ export PATH="$BUN_INSTALL/bin:$PATH"
 alias cld="claude --dangerously-skip-permissions"
 alias clc="claude --continue"
 alias clr="claude --resume"
+
+alias claude="/home/hank/.claude/local/claude"

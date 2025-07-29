@@ -89,6 +89,28 @@ install_uv() {
     log "UV 安装完成"
 }
 
+# 安装 Python 开发工具 (ruff, debugpy)
+install_python_dev_tools() {
+    log "安装 Python 开发工具 (ruff, debugpy)..."
+    
+    # 确保 pipx 可用
+    if ! command_exists pipx; then
+        error "pipx 未安装，请先运行 packages.sh"
+        return 1
+    fi
+    
+    # 使用 pipx 安装全局 Python 工具
+    log "使用 pipx 安装开发工具..."
+    pipx install ruff 2>/dev/null || log "ruff 可能已存在"
+    pipx install debugpy 2>/dev/null || log "debugpy 可能已存在"
+    pipx install poetry 2>/dev/null || log "poetry 可能已存在"
+    pipx install black 2>/dev/null || log "black 可能已存在" 
+    pipx install mypy 2>/dev/null || log "mypy 可能已存在"
+    pipx install cmake-init 2>/dev/null || log "mypy 可能已存在"
+    pipx install conan 2>/dev/null || log "mypy 可能已存在"
+    
+    log "Python 开发工具安装完成"
+}
 
 # 安装 NVM 和 Node.js
 install_node() {
@@ -161,6 +183,7 @@ main() {
     install_miniconda
     install_rust
     install_uv
+    install_python_dev_tools
     install_node
     install_docker
     
