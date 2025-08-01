@@ -1,0 +1,24 @@
+# Neovim local files
+config/nvim/undodir/
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Editor backups
+*~
+*.swp
+*.swo
+*.tmp
+
+# Personal/local configuration
+*.local
+*.secret
+
+# Shell history
+.zsh_history
