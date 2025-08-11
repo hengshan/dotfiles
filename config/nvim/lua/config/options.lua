@@ -32,7 +32,7 @@ vim.opt.cursorline = true
 vim.opt.wrap = false
 vim.opt.scrolloff = 8
 vim.opt.sidescrolloff = 8
-vim.opt.signcolumn = 'no'
+vim.opt.signcolumn = 'yes'
 
 -- Search settings
 vim.opt.hlsearch = true

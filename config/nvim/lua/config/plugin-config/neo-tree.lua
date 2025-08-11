@@ -21,7 +21,7 @@ neo_tree.setup({
   
   window = {
     position = "left",
-    width = 35,
+    width = 25,
     mappings = {
       ["<space>"] = { 
         "toggle_node", 
@@ -139,4 +139,4 @@ vim.api.nvim_create_autocmd("VimEnter", {
   end
 })
 
--- vim.notify("✅ Neo-tree configured successfully", vim.log.levels.DEBUG)
+-- -- vim.notify("✅ Neo-tree configured successfully", vim.log.levels.DEBUG)

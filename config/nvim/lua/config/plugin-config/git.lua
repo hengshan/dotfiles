@@ -134,7 +134,7 @@ if diffview_ok then
     vim.keymap.set('n', '<leader>gc', '<cmd>DiffviewClose<cr>', { desc = 'Close diffview' })
     vim.keymap.set('n', '<leader>gr', '<cmd>DiffviewRefresh<cr>', { desc = 'Refresh diffview' })
     
-    vim.notify("✅ Diffview.nvim configured", vim.log.levels.INFO)
+    vim.notify("✅ Diffview.nvim configured", vim.log.levels.DEBUG)
 end
 
 -- ============================================================================
@@ -151,4 +151,4 @@ vim.keymap.set('n', '<leader>gl', ':Git pull<CR>', { desc = 'Git pull' })
 vim.keymap.set('n', '<leader>gb', ':Git blame<CR>', { desc = 'Git blame' })
 vim.keymap.set('n', '<leader>gL', ':Git log --oneline<CR>', { desc = 'Git log' })
 
-vim.notify("✅ Git integration configured successfully", vim.log.levels.INFO)
+-- vim.notify("✅ Git integration configured successfully", vim.log.levels.DEBUG)

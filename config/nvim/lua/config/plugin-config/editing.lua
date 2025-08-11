@@ -21,7 +21,7 @@ if surround_ok then
             change = 'cs',
         },
     })
-    vim.notify("✅ nvim-surround configured", vim.log.levels.INFO)
+    vim.notify("✅ nvim-surround configured", vim.log.levels.DEBUG)
 end
 
 -- ============================================================================
@@ -65,7 +65,7 @@ if autopairs_ok then
             highlight_grey = 'LineNr'
         },
     })
-    vim.notify("✅ nvim-autopairs configured", vim.log.levels.INFO)
+    vim.notify("✅ nvim-autopairs configured", vim.log.levels.DEBUG)
 end
 
 -- ============================================================================
@@ -103,7 +103,7 @@ if comment_ok then
     vim.keymap.set('n', '<leader>/', 'gcc', { desc = 'Toggle line comment', remap = true })
     vim.keymap.set('v', '<leader>/', 'gc', { desc = 'Toggle block comment', remap = true })
     
-    vim.notify("✅ Comment.nvim configured", vim.log.levels.INFO)
+    vim.notify("✅ Comment.nvim configured", vim.log.levels.DEBUG)
 end
 
 -- ============================================================================
@@ -150,7 +150,7 @@ if toggleterm_ok then
         callback = set_terminal_keymaps,
     })
     
-    vim.notify("✅ ToggleTerm configured", vim.log.levels.INFO)
+    vim.notify("✅ ToggleTerm configured", vim.log.levels.DEBUG)
 end
 
 -- ============================================================================
@@ -207,7 +207,7 @@ if refactoring_ok then
         end, { desc = "Refactor Menu" })
     end)
     
-    vim.notify("✅ Refactoring.nvim configured", vim.log.levels.INFO)
+    vim.notify("✅ Refactoring.nvim configured", vim.log.levels.DEBUG)
 end
 
 -- ============================================================================
@@ -234,7 +234,7 @@ if lint_ok then
         end,
     })
     
-    vim.notify("✅ nvim-lint configured", vim.log.levels.INFO)
+    vim.notify("✅ nvim-lint configured", vim.log.levels.DEBUG)
 end
 
-vim.notify("✅ All editing plugins configured successfully", vim.log.levels.INFO)
+-- vim.notify("✅ All editing plugins configured successfully", vim.log.levels.DEBUG)

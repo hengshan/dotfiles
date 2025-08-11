@@ -104,6 +104,7 @@ if mason_lspconfig_ok then
             'cssls',         -- CSS LSP
             'clangd',        -- C/C++ LSP
             'rust_analyzer', -- Rust LSP
+            'cmake',         -- CMake LSP
         },
         automatic_installation = true,
         
@@ -239,6 +240,46 @@ if mason_lspconfig_ok then
                     }
                 })
             end,
+            
+            -- Clangd specific configuration (from original lines 492-510)
+            ['clangd'] = function()
+                require('lspconfig').clangd.setup({
+                    capabilities = capabilities,
+                    on_attach = enhanced_on_attach,
+                    cmd = {
+                        "clangd",
+                        "--background-index",           -- From original
+                        "--clang-tidy",                 -- From original
+                        "--header-insertion=iwyu",      -- From original
+                        "--completion-style=detailed",  -- From original
+                        "--function-arg-placeholders",  -- From original
+                        "--fallback-style=llvm",        -- From original
+                    },
+                    init_options = {
+                        usePlaceholders = true,         -- From original
+                        completeUnimported = true,      -- From original
+                        clangdFileStatus = true,        -- From original
+                    },
+                    filetypes = {"c", "cpp", "objc", "objcpp", "cuda"}, -- From original
+                })
+            end,
+            
+            -- CMake LSP configuration
+            ['cmake'] = function()
+                require('lspconfig').cmake.setup({
+                    capabilities = capabilities,
+                    on_attach = enhanced_on_attach,
+                    filetypes = {"cmake"},
+                    init_options = {
+                        buildDirectory = "build"
+                    },
+                    settings = {
+                        cmake = {
+                            buildDirectory = "build"
+                        }
+                    }
+                })
+            end,
         }
     })
     -- vim.notify("✅ Mason-LSPConfig configured", vim.log.levels.DEBUG)
@@ -288,26 +329,6 @@ end
 local lspconfig_ok, lspconfig = pcall(require, "lspconfig")
 if lspconfig_ok then
     local capabilities = get_capabilities()
-    
-    lspconfig.clangd.setup({
-        capabilities = capabilities,
-        on_attach = enhanced_on_attach,
-        cmd = {
-            "clangd",
-            "--background-index",           -- From original
-            "--clang-tidy",                 -- From original
-            "--header-insertion=iwyu",      -- From original
-            "--completion-style=detailed",  -- From original
-            "--function-arg-placeholders",  -- From original
-            "--fallback-style=llvm",        -- From original
-        },
-        init_options = {
-            usePlaceholders = true,         -- From original
-            completeUnimported = true,      -- From original
-            clangdFileStatus = true,        -- From original
-        },
-        filetypes = {"c", "cpp", "objc", "objcpp", "cuda"}, -- From original
-    })
     
     -- Markdown-oxide configuration (from original lines 512-520)
     lspconfig.markdown_oxide.setup({

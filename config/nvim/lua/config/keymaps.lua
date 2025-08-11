@@ -13,12 +13,6 @@ end
 -- ============================================================================
 map('i', 'jj', '<Esc>', { desc = 'Exit insert mode' })  -- User's preferred jj mapping
 
--- ============================================================================
--- Enhanced Text Editing (from original config)
--- ============================================================================
--- Bold text (from original line 8)
-map('v', '<leader>b', 'c**<C-r>"**<Esc>', { desc = 'Bold selected text' })
-
 -- Split line and create new line with indent (from original line 11)
 -- Changed from 'K' to avoid conflict with LSP hover
 map('n', '<leader>k', 'a<CR><Esc>', { desc = 'Split line and create new line with indent' })

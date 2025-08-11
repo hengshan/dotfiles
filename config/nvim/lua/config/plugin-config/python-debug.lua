@@ -194,7 +194,7 @@ local function get_debugpy_adapter()
     local exit_code = vim.v.shell_error
     
     if exit_code == 0 then
-      vim.notify("✅ debugpy installed via pipx!", vim.log.levels.INFO)
+      vim.notify("✅ debugpy installed via pipx!", vim.log.levels.DEBUG)
       return pipx_debugpy
     else
       vim.notify("❌ pipx install failed: " .. result, vim.log.levels.ERROR)
@@ -205,7 +205,7 @@ local function get_debugpy_adapter()
     local exit_code = vim.v.shell_error
     
     if exit_code == 0 then
-      vim.notify("✅ debugpy installed via system pip!", vim.log.levels.INFO)
+      vim.notify("✅ debugpy installed via system pip!", vim.log.levels.DEBUG)
       return system_python
     else
       vim.notify("❌ system pip install failed: " .. result, vim.log.levels.ERROR)
@@ -391,7 +391,7 @@ function M.restart_python_lsp(python_path)
       }
     })
     
-    vim.notify("✅ Python LSP servers restarted with new environment", vim.log.levels.INFO)
+    vim.notify("✅ Python LSP servers restarted with new environment", vim.log.levels.DEBUG)
   end, 1000)
 end
 
@@ -450,10 +450,10 @@ function M.select_python_interpreter()
           -- Configure DAP with selected interpreter and update environment
           configure_dap_python(debugpy_adapter, python_path, true)
           
-          vim.notify("✅ Debugging configured and environment switched!", vim.log.levels.INFO)
+          vim.notify("✅ Debugging configured and environment switched!", vim.log.levels.DEBUG)
           -- vim.notify("🔧 Debugpy adapter: " .. debugpy_adapter, vim.log.levels.DEBUG)
-          vim.notify("🐍 Code runner: " .. selection.value.display, vim.log.levels.INFO)
-          vim.notify("🔄 Neovim environment updated to match interpreter", vim.log.levels.INFO)
+          vim.notify("🐍 Code runner: " .. selection.value.display, vim.log.levels.DEBUG)
+          vim.notify("🔄 Neovim environment updated to match interpreter", vim.log.levels.DEBUG)
         end
       end)
       return true

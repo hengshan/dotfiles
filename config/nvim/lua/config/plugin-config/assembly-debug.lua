@@ -41,7 +41,7 @@ local function detect_asm_type_and_assemble()
     end
   end
   
-  vim.notify("🔍 Detected: " .. assembler .. " assembler", vim.log.levels.INFO)
+  vim.notify("🔍 Detected: " .. assembler .. " assembler", vim.log.levels.DEBUG)
   
   -- Prepare file names
   local obj_file = cwd .. "/" .. file_stem .. ".o"
@@ -78,7 +78,7 @@ local function detect_asm_type_and_assemble()
   end
   
   -- Assemble
-  vim.notify("🔨 Assembling: " .. assemble_cmd, vim.log.levels.INFO)
+  vim.notify("🔨 Assembling: " .. assemble_cmd, vim.log.levels.DEBUG)
   local result = vim.fn.system(assemble_cmd)
   local exit_code = vim.v.shell_error
   
@@ -88,7 +88,7 @@ local function detect_asm_type_and_assemble()
   end
   
   -- Link
-  vim.notify("🔗 Linking: " .. link_cmd, vim.log.levels.INFO)
+  vim.notify("🔗 Linking: " .. link_cmd, vim.log.levels.DEBUG)
   result = vim.fn.system(link_cmd)
   exit_code = vim.v.shell_error
   
@@ -102,7 +102,7 @@ local function detect_asm_type_and_assemble()
   -- Clean up object file
   vim.fn.delete(obj_file)
   
-  vim.notify("✅ Successfully created: " .. exe_file, vim.log.levels.INFO)
+  vim.notify("✅ Successfully created: " .. exe_file, vim.log.levels.DEBUG)
   return exe_file
 end
 
@@ -125,7 +125,7 @@ function M.compile_and_run_asm()
   -- Ask whether to run
   local choice = vim.fn.confirm("Run the program?", "&Yes\n&No", 1)
   if choice == 1 then
-    vim.notify("🚀 Running: " .. exe_file, vim.log.levels.INFO)
+    vim.notify("🚀 Running: " .. exe_file, vim.log.levels.DEBUG)
     vim.cmd("!./" .. vim.fn.shellescape(vim.fn.fnamemodify(exe_file, ":t")))
   end
 end
@@ -164,14 +164,14 @@ local function find_or_compile_asm_executable()
       local src_time = vim.fn.getftime(current_file)
       
       if exe_time > src_time then
-        vim.notify("✅ Found existing executable: " .. exe_path, vim.log.levels.INFO)
+        vim.notify("✅ Found existing executable: " .. exe_path, vim.log.levels.DEBUG)
         return exe_path
       end
     end
   end
   
   -- Need to recompile
-  vim.notify("🔨 Compiling assembly file for debugging...", vim.log.levels.INFO)
+  vim.notify("🔨 Compiling assembly file for debugging...", vim.log.levels.DEBUG)
   local exe_file = detect_asm_type_and_assemble()
   
   if exe_file and vim.fn.executable(exe_file) == 1 then
@@ -323,15 +323,15 @@ function M.clean_assembly_build()
   for _, file in ipairs(artifacts) do
     if vim.fn.filereadable(file) == 1 then
       vim.fn.delete(file)
-      vim.notify("🗑️  Removed: " .. file, vim.log.levels.INFO)
+      vim.notify("🗑️  Removed: " .. file, vim.log.levels.DEBUG)
       cleaned = cleaned + 1
     end
   end
   
   if cleaned == 0 then
-    vim.notify("✨ No build artifacts to clean", vim.log.levels.INFO)
+    vim.notify("✨ No build artifacts to clean", vim.log.levels.DEBUG)
   else
-    vim.notify("✅ Cleaned " .. cleaned .. " build artifact(s)", vim.log.levels.INFO)
+    vim.notify("✅ Cleaned " .. cleaned .. " build artifact(s)", vim.log.levels.DEBUG)
   end
 end
 

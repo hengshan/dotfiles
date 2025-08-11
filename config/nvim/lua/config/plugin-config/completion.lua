@@ -306,4 +306,4 @@ if cmp_autopairs_ok then
     cmp.event:on('confirm_done', cmp_autopairs.on_confirm_done())
 end
 
-vim.notify("✅ Completion system configured successfully", vim.log.levels.INFO)
+-- vim.notify("✅ Completion system configured successfully", vim.log.levels.DEBUG)

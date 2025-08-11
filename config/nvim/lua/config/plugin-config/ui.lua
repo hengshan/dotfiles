@@ -31,7 +31,7 @@ if status_ok then
             lualine_z = {}
         },
     })
-    vim.notify("✅ Lualine configured", vim.log.levels.INFO)
+    vim.notify("✅ Lualine configured", vim.log.levels.DEBUG)
 end
 
 -- ============================================================================
@@ -99,7 +99,7 @@ if gitsigns_ok then
             map({'o', 'x'}, 'ih', ':<C-U>Gitsigns select_hunk<CR>', {desc="Select hunk"})
         end
     })
-    vim.notify("✅ GitSigns configured", vim.log.levels.INFO)
+    vim.notify("✅ GitSigns configured", vim.log.levels.DEBUG)
 end
 
 -- ============================================================================
@@ -135,7 +135,7 @@ if ibl_ok then
             },
         },
     })
-    vim.notify("✅ Indent Blankline configured", vim.log.levels.INFO)
+    vim.notify("✅ Indent Blankline configured", vim.log.levels.DEBUG)
 end
 
 -- ============================================================================
@@ -196,7 +196,7 @@ if trouble_ok then
     vim.keymap.set('n', '<leader>xq', '<cmd>TroubleToggle quickfix<cr>', { desc = 'Quickfix' })
     vim.keymap.set('n', 'gR', '<cmd>TroubleToggle lsp_references<cr>', { desc = 'LSP references' })
     
-    vim.notify("✅ Trouble configured", vim.log.levels.INFO)
+    vim.notify("✅ Trouble configured", vim.log.levels.DEBUG)
 end
 
 -- ============================================================================
@@ -252,7 +252,7 @@ if ufo_ok then
         end
     })
     
-    vim.notify("✅ UFO (Advanced Folding) configured", vim.log.levels.INFO)
+    vim.notify("✅ UFO (Advanced Folding) configured", vim.log.levels.DEBUG)
 end
 
 -- ============================================================================
@@ -325,22 +325,25 @@ if which_key_ok then
         { "<leader>h", group = "git hunks" },
         { "<leader>l", group = "lsp" },
         { "<leader>r", group = "refactor" },
-        { "<leader>t", group = "toggle" },
         { "<leader>w", group = "workspace" },
-        { "<leader>c", group = "code" },
+        { "<leader>c", group = "cmake/code" },
+        { "<leader>cb", desc = "Build Project" },
+        { "<leader>cc", desc = "Configure CMake" },
         { "<leader>x", group = "trouble" },
         { "<leader>s", group = "search/snippets" },
         { "<leader>b", group = "buffer" },
         { "<leader>a", group = "ai/assistant" },
         { "<leader>j", group = "javascript" },
         { "<leader>p", group = "python" },
+        { "<leader>t", group = "terminal/toggle" },
+        { "<leader>o", group = "overseer/tasks" },
         { "g", group = "goto" },
         { "z", group = "fold" },
         { "]", group = "next" },
         { "[", group = "prev" },
     })
     
-    vim.notify("✅ Which-key v3 configured", vim.log.levels.INFO)
+    vim.notify("✅ Which-key v3 configured", vim.log.levels.DEBUG)
 end
 
 -- ============================================================================
@@ -356,7 +359,7 @@ if signature_ok then
         hint_enable = true,
         hint_prefix = "🐼 ",
     })
-    vim.notify("✅ LSP Signature configured", vim.log.levels.INFO)
+    vim.notify("✅ LSP Signature configured", vim.log.levels.DEBUG)
 end
 
 -- ============================================================================
@@ -368,7 +371,7 @@ if maximize_ok then
     -- Keymap from original config
     vim.keymap.set('n', '<leader>z', "<cmd>lua require('maximize').toggle()<CR>", 
                   { noremap = true, silent = true, desc = 'Toggle maximize window' })
-    vim.notify("✅ Maximize plugin configured", vim.log.levels.INFO)
+    vim.notify("✅ Maximize plugin configured", vim.log.levels.DEBUG)
 end
 
 -- ============================================================================
@@ -376,7 +379,7 @@ end
 -- ============================================================================
 pcall(function()
     vim.cmd('colorscheme gruvbox')
-    vim.notify("✅ Colorscheme set to gruvbox", vim.log.levels.INFO)
+    vim.notify("✅ Colorscheme set to gruvbox", vim.log.levels.DEBUG)
 end)
 
-vim.notify("✅ All UI plugins configured successfully", vim.log.levels.INFO)
+-- vim.notify("✅ All UI plugins configured successfully", vim.log.levels.DEBUG)

@@ -55,7 +55,7 @@ if rust_tools_ok then
         },
     })
     
-    vim.notify("✅ Rust Tools configured", vim.log.levels.INFO)
+    vim.notify("✅ Rust Tools configured", vim.log.levels.DEBUG)
 end
 
 -- ============================================================================
@@ -156,4 +156,4 @@ vim.g.loaded_rrhelper = 1
 vim.g.loaded_spellfile_plugin = 1
 vim.g.loaded_matchit = 1
 
-vim.notify("✅ Miscellaneous plugins configured successfully", vim.log.levels.INFO)
+-- vim.notify("✅ Miscellaneous plugins configured successfully", vim.log.levels.DEBUG)

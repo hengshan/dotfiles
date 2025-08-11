@@ -67,4 +67,4 @@ configs.setup({
 vim.opt.foldmethod = "expr"
 vim.opt.foldexpr = "nvim_treesitter#foldexpr()"
 
--- vim.notify("✅ TreeSitter configured successfully", vim.log.levels.DEBUG)
+-- -- vim.notify("✅ TreeSitter configured successfully", vim.log.levels.DEBUG)

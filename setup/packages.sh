@@ -112,7 +112,7 @@ EOF
 install_basic_packages() {
     log "更新包列表..."
     sudo apt update
-    
+
     log "安装基础系统包..."
     sudo apt install -y \
         curl \
@@ -146,8 +146,10 @@ install_basic_packages() {
         python3-pip \
         python3-venv \
         python3-dev \
-        pipx
-    
+        pipx \
+        libssl-dev libffi-dev libncurses-dev libreadline-dev libbz2-dev liblzma-dev libgdbm-dev tk-dev libzstd-dev \
+        libsqlite3-dev libgdbm-dev
+
     log "installing neovim latesti version"
     install_latest_neovim
 
@@ -179,17 +181,17 @@ install_latest_neovim() {
 # 配置一些工具的别名
 setup_tool_aliases() {
     log "设置工具别名..."
-    
+
     # 为 bat 创建别名 (Ubuntu 中叫 batcat)
     if command -v batcat &> /dev/null && ! command -v bat &> /dev/null; then
         sudo ln -sf /usr/bin/batcat /usr/local/bin/bat
     fi
-    
+
     # 为 fd 创建别名 (Ubuntu 中叫 fdfind)
     if command -v fdfind &> /dev/null && ! command -v fd &> /dev/null; then
         sudo ln -sf /usr/bin/fdfind /usr/local/bin/fd
     fi
-    
+
     log "工具别名设置完成"
 }
 
@@ -218,40 +220,40 @@ install_fonts() {
 # 配置 Git 全局设置
 configure_git() {
     log "配置 Git 全局设置..."
-    
+
     # 如果还没有配置用户信息，提示用户输入
     if ! git config --global user.name &> /dev/null; then
         echo "请输入你的 Git 用户名:"
         read -r git_username
         git config --global user.name "$git_username"
     fi
-    
+
     if ! git config --global user.email &> /dev/null; then
         echo "请输入你的 Git 邮箱:"
         read -r git_email
         git config --global user.email "$git_email"
     fi
-    
+
     # 设置一些有用的 Git 配置
     git config --global init.defaultBranch main
     git config --global pull.rebase false
     git config --global core.editor nvim
     git config --global color.ui auto
     git config --global push.default simple
-    
+
     log "Git 配置完成"
 }
 
 # 主安装流程
 main() {
     log "开始安装系统包..."
-    
+
     configure_apt_mirrors
     install_basic_packages
     setup_tool_aliases
     install_fonts
     configure_git
-    
+
     log "系统包安装和配置完成!"
 }
 

@@ -130,4 +130,4 @@ vim.keymap.set('n', '<leader>fj', builtin.jumplist, { desc = 'Find jumplist' })
 vim.keymap.set('n', '<leader>fk', builtin.keymaps, { desc = 'Find keymaps' })
 vim.keymap.set('n', '<leader>ft', builtin.filetypes, { desc = 'Find filetypes' })
 
-vim.notify("✅ Telescope configured successfully", vim.log.levels.INFO)
+-- -- vim.notify("✅ Telescope configured successfully", vim.log.levels.DEBUG)

@@ -203,9 +203,39 @@ require("lazy").setup({
       { "<F10>", function() require("dap").step_over() end, desc = "Debug: Step Over" },
       { "<F11>", function() require("dap").step_into() end, desc = "Debug: Step Into" },
       { "<F12>", function() require("dap").step_out() end, desc = "Debug: Step Out" },
-      { "<leader>b", function() require("dap").toggle_breakpoint() end, desc = "Debug: Toggle Breakpoint" },
-      { "<leader>dr", function() require("dap").repl.open() end, desc = "Debug: Open REPL" },
+      { "<leader>b", function() require("dap").toggle_breakpoint() end, desc = "Debug: Toggle Breakpoint", mode = "n" },
       { "<leader>du", function() require("dapui").toggle() end, desc = "Debug: Toggle UI" },
+      { "<leader>dr", function() 
+        local dapui = require("dapui")
+        -- 完全关闭并重新打开，恢复到默认布局
+        dapui.close()
+        vim.defer_fn(function() 
+          -- 重新打开，使用初始配置的布局
+          dapui.open({
+            layout = 1, -- 使用第一个布局配置（左侧面板）
+            reset = true -- 重置窗口大小
+          })
+          -- 同时打开第二个布局（底部面板）
+          vim.defer_fn(function()
+            dapui.open({
+              layout = 2, -- 第二个布局配置（底部面板）
+              reset = true
+            })
+            -- 重新调整 Neo-tree 宽度
+            vim.defer_fn(function()
+              local neotree_wins = vim.tbl_filter(function(win)
+                local buf = vim.api.nvim_win_get_buf(win)
+                local ft = vim.api.nvim_buf_get_option(buf, 'filetype')
+                return ft == 'neo-tree'
+              end, vim.api.nvim_list_wins())
+              
+              for _, win in ipairs(neotree_wins) do
+                vim.api.nvim_win_set_width(win, 25)
+              end
+            end, 50)
+          end, 50)
+        end, 100)
+      end, desc = "Debug: Reset UI Layout" },
     },
     config = function()
       require("config.plugin-config.debugging")
@@ -448,7 +478,7 @@ require("lazy").setup({
           highlight_grey = 'LineNr'
         },
       })
-      
+
       -- Integrate with nvim-cmp
       local cmp_autopairs = require('nvim-autopairs.completion.cmp')
       local cmp = require('cmp')
@@ -499,14 +529,6 @@ require("lazy").setup({
     end,
   },
 
-  {
-    "akinsho/toggleterm.nvim",
-    version = "*",
-    keys = {
-      { "<c-\\>", "<cmd>ToggleTerm<cr>", desc = "Toggle terminal" },
-      { "<leader>t", ":belowright split | terminal<CR>", desc = "Open terminal at bottom" },
-    },
-  },
 
   -- ============================================================================
   -- Code Quality and Linting (from original config - was missing!)
@@ -556,7 +578,7 @@ require("lazy").setup({
           enter_insert = true,      -- Enter insert mode when opening Claude Code
           hide_numbers = true,      -- Hide line numbers in terminal window
           hide_signcolumn = true,   -- Hide sign column in terminal window
-          
+
           -- Floating window configuration (from original lines 242-249)
           float = {
             width = "80%",        -- Width: number of columns or percentage string
@@ -567,7 +589,7 @@ require("lazy").setup({
             border = "rounded",   -- Border style: "none", "single", "double", "rounded"
           },
         },
-        
+
         -- File refresh settings (from original lines 252-257)
         refresh = {
           enable = true,           -- Enable file change detection
@@ -575,39 +597,35 @@ require("lazy").setup({
           timer_interval = 1000,   -- How often to check for file changes (ms)
           show_notifications = true, -- Show notification when files are reloaded
         },
-        
+
         -- Git project settings (from original lines 259-261)
         git = {
           use_git_root = true,     -- Set CWD to git root when opening Claude Code
         },
-        
+
         -- Shell-specific settings (from original lines 263-267)
         shell = {
           separator = '&&',        -- Command separator used in shell commands
           pushd_cmd = 'pushd',     -- Command to push directory onto stack
           popd_cmd = 'popd',       -- Command to pop directory from stack
         },
-        
+
         -- Command settings (from original line 269)
         command = "/home/hank/.claude/local/claude",
-        
+
         -- Command variants (from original lines 271-277)
         command_variants = {
           continue = "--continue", -- Resume the most recent conversation
           resume = "--resume",     -- Display an interactive conversation picker
           verbose = "--verbose",   -- Enable verbose logging
         },
-        
+
         -- Keymaps (from original lines 279-291)
         keymaps = {
           toggle = {
             normal = "<leader><leader>",       -- Normal mode keymap for toggling
             terminal = "<leader><leader>",     -- Terminal mode keymap for toggling
-            variants = {
-              continue = "<leader>cc",       -- Continue flag
-              verbose = "<leader>cv",        -- Verbose flag
-              resume = "<leader>cr",         -- Resume flag
-            },
+            variants = {},
           },
           window_navigation = true, -- Enable window navigation keymaps (<C-h/j/k/l>)
           scrolling = true,         -- Enable scrolling keymaps (<C-f/b>)
@@ -667,7 +685,7 @@ require("lazy").setup({
         provider_selector = function(bufnr, filetype, buftype)
           if filetype == 'python' then
             return {'treesitter', 'indent'}
-          elseif filetype == 'javascript' or filetype == 'typescript' or 
+          elseif filetype == 'javascript' or filetype == 'typescript' or
                  filetype == 'typescriptreact' or filetype == 'javascriptreact' then
             return {'lsp', 'treesitter'}
           elseif filetype == 'lua' then
@@ -676,14 +694,14 @@ require("lazy").setup({
             return {'treesitter', 'indent'}
           end
         end,
-        
+
         fold_virt_text_handler = function(virtText, lnum, endLnum, width, truncate)
           local newVirtText = {}
           local suffix = (' 󰁂 %d '):format(endLnum - lnum)
           local sufWidth = vim.fn.strdisplaywidth(suffix)
           local targetWidth = width - sufWidth
           local curWidth = 0
-          
+
           for _, chunk in ipairs(virtText) do
             local chunkText = chunk[1]
             local chunkWidth = vim.fn.strdisplaywidth(chunkText)
@@ -701,7 +719,7 @@ require("lazy").setup({
             end
             curWidth = curWidth + chunkWidth
           end
-          
+
           table.insert(newVirtText, {suffix, 'MoreMsg'})
           return newVirtText
         end
@@ -712,6 +730,37 @@ require("lazy").setup({
   -- ============================================================================
   -- Language Specific Enhancements
   -- ============================================================================
+
+  -- Task Runner
+  {
+    "stevearc/overseer.nvim",
+    cmd = { "OverseerRun", "OverseerToggle", "OverseerInfo" },
+    keys = {
+      { "<leader>ot", "<cmd>OverseerToggle<cr>", desc = "Overseer: Toggle Tasks" },
+      -- Direct CMake commands (most useful)
+      { "<leader>cb", "<cmd>OverseerQuickRun<cr>", desc = "Build Project" },
+      { "<leader>cc", "<cmd>OverseerRun cmake_configure<cr>", desc = "Configure CMake" },
+    },
+    config = function()
+      require("config.plugin-config.overseer")
+    end,
+  },
+
+  -- Terminal Management
+  {
+    "akinsho/toggleterm.nvim",
+    version = "*",
+    keys = {
+      { "<C-\\>", "<cmd>ToggleTerm<cr>", desc = "Toggle Terminal" },
+      { "<leader>tf", "<cmd>ToggleTerm direction=float<cr>", desc = "Toggle Float Terminal" },
+      { "<leader>th", "<cmd>ToggleTerm direction=horizontal<cr>", desc = "Toggle Horizontal Terminal" },
+      { "<leader>tv", "<cmd>ToggleTerm direction=vertical<cr>", desc = "Toggle Vertical Terminal" },
+    },
+    config = function()
+      require("config.plugin-config.toggleterm")
+    end,
+  },
+
   {
     "simrat39/rust-tools.nvim",
     ft = "rust",
@@ -725,6 +774,112 @@ require("lazy").setup({
     "jose-elias-alvarez/null-ls.nvim",
     event = { "BufReadPre", "BufNewFile" },
     dependencies = { "nvim-lua/plenary.nvim" },
+  },
+
+  -- ============================================================================
+  -- Markdown Support
+  -- ============================================================================
+  -- Markdown Preview
+  {
+    "iamcco/markdown-preview.nvim",
+    cmd = { "MarkdownPreviewToggle", "MarkdownPreview", "MarkdownPreviewStop" },
+    build = "cd app && npm install",
+    ft = { "markdown" },
+    keys = {
+      { "<leader>mp", "<cmd>MarkdownPreviewToggle<cr>", desc = "Toggle Markdown Preview", ft = "markdown" },
+      { "<leader>ms", "<cmd>MarkdownPreview<cr>", desc = "Start Markdown Preview", ft = "markdown" },
+      { "<leader>mq", "<cmd>MarkdownPreviewStop<cr>", desc = "Stop Markdown Preview", ft = "markdown" },
+    },
+    init = function()
+      vim.g.mkdp_filetypes = { "markdown" }
+    end,
+    config = function()
+      require("config.plugin-config.markdown")
+    end,
+  },
+
+  -- Enhanced Markdown Syntax and Navigation
+  {
+    "preservim/vim-markdown",
+    ft = { "markdown" },
+    dependencies = { "godlygeek/tabular" },
+    keys = {
+      { "<leader>mt", "<cmd>Toc<cr>", desc = "Markdown TOC", ft = "markdown" },
+      { "]]", "<Plug>Markdown_MoveToNextHeader", desc = "Next header", ft = "markdown" },
+      { "[[", "<Plug>Markdown_MoveToPreviousHeader", desc = "Previous header", ft = "markdown" },
+      { "][", "<Plug>Markdown_MoveToNextSiblingHeader", desc = "Next sibling header", ft = "markdown" },
+      { "[]", "<Plug>Markdown_MoveToPreviousSiblingHeader", desc = "Previous sibling header", ft = "markdown" },
+      { "]u", "<Plug>Markdown_MoveToParentHeader", desc = "Parent header", ft = "markdown" },
+    },
+    config = function()
+      -- Disable default key mappings
+      vim.g.vim_markdown_no_default_key_mappings = 0
+      -- Enable folding
+      vim.g.vim_markdown_folding_disabled = 0
+      vim.g.vim_markdown_folding_style_pythonic = 1
+      vim.g.vim_markdown_folding_level = 2
+      -- Table of contents
+      vim.g.vim_markdown_toc_autofit = 1
+      -- Conceal settings
+      vim.g.vim_markdown_conceal = 2
+      vim.g.vim_markdown_conceal_code_blocks = 0
+      -- Math support
+      vim.g.vim_markdown_math = 1
+      -- YAML frontmatter
+      vim.g.vim_markdown_frontmatter = 1
+      vim.g.vim_markdown_toml_frontmatter = 1
+      vim.g.vim_markdown_json_frontmatter = 1
+      -- Strikethrough
+      vim.g.vim_markdown_strikethrough = 1
+      -- Auto write when following links
+      vim.g.vim_markdown_autowrite = 1
+    end,
+  },
+
+  -- Smart Table Editing
+  {
+    "dhruvasagar/vim-table-mode",
+    ft = { "markdown" },
+    keys = {
+      { "<leader>tm", "<cmd>TableModeToggle<cr>", desc = "Toggle Table Mode", ft = "markdown" },
+      { "<leader>tt", "<cmd>Tableize<cr>", desc = "Tableize", mode = "v", ft = "markdown" },
+      { "<leader>tdd", "<cmd>TableModeDeleteRow<cr>", desc = "Delete Row", ft = "markdown" },
+      { "<leader>tdc", "<cmd>TableModeDeleteColumn<cr>", desc = "Delete Column", ft = "markdown" },
+      { "<leader>tic", "<cmd>TableModeInsertColumn<cr>", desc = "Insert Column After", ft = "markdown" },
+      { "<leader>tiC", "<cmd>TableModeInsertColumnBefore<cr>", desc = "Insert Column Before", ft = "markdown" },
+    },
+    config = function()
+      -- Use markdown-compatible table corners
+      vim.g.table_mode_corner = '|'
+      vim.g.table_mode_corner_corner = '|'
+      vim.g.table_mode_header_fillchar = '-'
+      -- Auto format on type
+      vim.g.table_mode_auto_align = 1
+      -- Real-time formatting
+      vim.g.table_mode_realtime_align = 1
+    end,
+  },
+
+  -- Smart List Management
+  {
+    "bullets-vim/bullets.vim",
+    ft = { "markdown", "text", "gitcommit" },
+    config = function()
+      -- Enable for markdown and text files
+      vim.g.bullets_enabled_file_types = { 'markdown', 'text', 'gitcommit' }
+      -- Checkbox support
+      vim.g.bullets_checkbox_markers = ' .oOX'
+      -- Line spacing
+      vim.g.bullets_line_spacing = 1
+      -- Pad empty lines
+      vim.g.bullets_pad_right = 0
+      -- Auto-wrap
+      vim.g.bullets_auto_indent_after_colon = 1
+      -- Nested checkboxes
+      vim.g.bullets_nested_checkboxes = 1
+      -- Markdown checkbox toggle
+      vim.g.bullets_checkbox_partials_toggle = 1
+    end,
   },
 
   -- ============================================================================

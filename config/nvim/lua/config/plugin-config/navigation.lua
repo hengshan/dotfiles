@@ -42,4 +42,4 @@ vim.keymap.set('n', '<leader>to', ':tabonly<CR>', { desc = 'Close other tabs' })
 vim.keymap.set('n', '<leader>fv', ':e ~/.config/nvim/init.lua<CR>', { desc = 'Edit init.lua' })
 vim.keymap.set('n', '<leader>fz', ':e ~/.zshrc<CR>', { desc = 'Edit zshrc' })
 
-vim.notify("✅ Navigation plugins configured successfully", vim.log.levels.INFO)
+-- vim.notify("✅ Navigation plugins configured successfully", vim.log.levels.DEBUG)

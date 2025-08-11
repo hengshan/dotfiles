@@ -15,3 +15,8 @@ require('config.options')    -- Basic vim settings
 require('config.keymaps')    -- Key mappings (including jj escape)
 require('config.autocmds')   -- Autocommands and filetype configs
 require('config.lazy')       -- Lazy.nvim plugin management
+
+-- Load diagnostics for troubleshooting (deferred)
+vim.defer_fn(function()
+  require('config.diagnostics') -- Configuration diagnostics
+end, 1000)

@@ -15,17 +15,35 @@ local function get_dap()
 end
 
 -- ============================================================================
+-- DAP Signs Configuration
+-- ============================================================================
+-- Configure DAP breakpoint signs using modern Neovim API
+vim.fn.sign_define('DapBreakpoint', { text='🔴', texthl='DapBreakpoint', linehl='', numhl=''})
+vim.fn.sign_define('DapBreakpointCondition', { text='🟡', texthl='DapBreakpointCondition', linehl='', numhl=''})
+vim.fn.sign_define('DapLogPoint', { text='📝', texthl='DapLogPoint', linehl='', numhl=''})
+vim.fn.sign_define('DapStopped', { text='▶️', texthl='DapStopped', linehl='DapStoppedLine', numhl=''})
+vim.fn.sign_define('DapBreakpointRejected', { text='❌', texthl='DapBreakpointRejected', linehl='', numhl=''})
+
+-- Set up highlight groups for DAP signs
+vim.api.nvim_set_hl(0, 'DapBreakpoint', { fg = '#e51400' })
+vim.api.nvim_set_hl(0, 'DapBreakpointCondition', { fg = '#ffa500' })
+vim.api.nvim_set_hl(0, 'DapLogPoint', { fg = '#61afef' })
+vim.api.nvim_set_hl(0, 'DapStopped', { fg = '#98c379' })
+vim.api.nvim_set_hl(0, 'DapBreakpointRejected', { fg = '#888888' })
+vim.api.nvim_set_hl(0, 'DapStoppedLine', { bg = '#2e4057' })
+
+-- ============================================================================
 -- DAP UI Setup (from original lines 784-824)
 -- ============================================================================
 local dapui_ok, dapui = pcall(require, "dapui")
 if dapui_ok then
     -- Ensure web-devicons is loaded for DAP UI
     pcall(require, "nvim-web-devicons")
-    
+
     dapui.setup({
         controls = {
             element = "repl",           -- From original
-            enabled = true,             -- From original  
+            enabled = true,             -- From original
         },
         element_mappings = {},
         expand_lines = true,            -- From original
@@ -68,7 +86,7 @@ if dapui_ok then
             max_value_lines = 100       -- From original
         }
     })
-    
+
     -- Auto open/close DAP UI (deferred)
     vim.defer_fn(function()
         local dap = get_dap()
@@ -80,7 +98,7 @@ if dapui_ok then
             -- Users can manually toggle with <leader>du if needed
         end
     end, 100)
-    
+
     -- vim.notify("✅ DAP UI configured", vim.log.levels.DEBUG)
 end
 
@@ -111,11 +129,35 @@ end
 -- Advanced Python DAP Configuration with Environment Detection
 -- ============================================================================
 
+-- ============================================================================
+-- CodeLLDB Adapter Configuration
+-- ============================================================================
+vim.defer_fn(function()
+    local dap = get_dap()
+    if dap then
+        -- Configure codelldb adapter
+        local codelldb_path = vim.fn.expand("~/.local/codelldb/extension/adapter/codelldb")
+        if vim.fn.executable(codelldb_path) == 1 then
+            dap.adapters.codelldb = {
+                type = 'server',
+                port = "${port}",
+                executable = {
+                    command = codelldb_path,
+                    args = {"--port", "${port}"},
+                },
+            }
+            -- vim.notify("✅ codelldb adapter configured successfully", vim.log.levels.DEBUG)
+        else
+            vim.notify("❌ codelldb not found at " .. codelldb_path, vim.log.levels.ERROR)
+        end
+    end
+end, 200)
+
 -- Load Python debug module
 local python_debug_ok, python_debug = pcall(require, "config.plugin-config.python-debug")
 if python_debug_ok then
     -- vim.notify("✅ Python environment detection loaded", vim.log.levels.DEBUG)
-    
+
     -- Auto-setup Python debugging on FileType event (safer than defer_fn)
     vim.api.nvim_create_autocmd("FileType", {
         pattern = "python",
@@ -152,7 +194,7 @@ else
             }
         end
     end, 300)
-    
+
     vim.notify("⚠️ Using fallback Python debug configuration", vim.log.levels.WARN)
 end
 
@@ -165,7 +207,7 @@ if dap_vscode_js_ok then
         debugger_path = vim.fn.stdpath('data') .. '/plugged/vscode-js-debug', -- From original - vim-plug path
         adapters = { 'pwa-node', 'pwa-chrome' }  -- From original
     })
-    
+
     -- Basic JS/TS configurations (deferred)
     vim.defer_fn(function()
         local dap = get_dap()
@@ -180,13 +222,13 @@ if dap_vscode_js_ok then
                     console = 'integratedTerminal',
                 },
             }
-            
+
             dap.configurations.typescript = dap.configurations.javascript
             dap.configurations.javascriptreact = dap.configurations.javascript
             dap.configurations.typescriptreact = dap.configurations.javascript
         end
     end, 150)
-    
+
     -- vim.notify("✅ JavaScript/TypeScript debugging configured", vim.log.levels.DEBUG)
 end
 
@@ -198,7 +240,7 @@ end
 vim.defer_fn(function()
     local dap = get_dap()
     if not dap then return end
-    
+
     -- Core debugging controls (from original config)
     vim.keymap.set('n', '<F5>', dap.continue, { desc = "Debug: Start/Continue" })
     vim.keymap.set('n', '<F10>', dap.step_over, { desc = "Debug: Step Over" })
@@ -217,7 +259,7 @@ vim.defer_fn(function()
     end, { desc = "Debug: Log Point" })
 
     -- REPL and session management (from original config)
-    vim.keymap.set('n', '<Leader>dr', dap.repl.open, { desc = "Debug: Open REPL" })
+    -- <leader>dr moved to lazy.lua for DAP UI reset
     vim.keymap.set('n', '<Leader>dl', dap.run_last, { desc = "Debug: Run Last" })
 
     -- Terminate debugging (from original lines 2258-2267)
@@ -225,7 +267,7 @@ vim.defer_fn(function()
         dap.terminate()
     end, { desc = "Debug: Terminate" })
 
-    vim.keymap.set('n', '<Leader>dx', function() 
+    vim.keymap.set('n', '<Leader>dx', function()
         dap.terminate()
         vim.schedule(function()
             dap.close()
@@ -233,9 +275,9 @@ vim.defer_fn(function()
     end, { desc = "Debug: Force Terminate and Close Session" })
 
     -- Expression evaluation (from original lines 2268-2272)
-    vim.keymap.set({'n', 'v'}, '<Leader>de', function() 
+    vim.keymap.set({'n', 'v'}, '<Leader>de', function()
         if dapui_ok then
-            dapui.eval() 
+            dapui.eval()
         else
             dap.eval()
         end
@@ -260,14 +302,14 @@ end
 -- Quick Setup Commands and Enhanced Keybindings
 -- ============================================================================
 
--- Load C/C++ debug module with immediate configuration
+-- Load simplified C/C++ debug module 
 local cpp_debug_ok, cpp_debug = pcall(require, "config.plugin-config.cpp-debug")
 if cpp_debug_ok then
     -- vim.notify("✅ C/C++ compilation and debugging loaded", vim.log.levels.DEBUG)
-    
+
     -- Setup autocmd for C/C++ files only
     local cpp_configured = false
-    
+
     -- Function to configure C/C++ debugging
     local function setup_cpp_debugging()
         if not cpp_configured then
@@ -275,14 +317,14 @@ if cpp_debug_ok then
             vim.schedule(function()
                 local success = cpp_debug.configure_dap_cpp()
                 if success then
-                    vim.notify("🔧 C/C++ debugging configured", vim.log.levels.INFO)
+                    vim.notify("🔧 C/C++ debugging configured", vim.log.levels.DEBUG)
                 else
                     vim.notify("❌ Failed to configure C/C++ debugging", vim.log.levels.ERROR)
                 end
             end)
         end
     end
-    
+
     -- Multiple event triggers to ensure configuration
     vim.api.nvim_create_autocmd({"FileType", "BufEnter", "BufRead"}, {
         pattern = {"*.c", "*.cpp", "*.h", "*.hpp"},
@@ -294,7 +336,7 @@ if cpp_debug_ok then
         end,
         desc = "Auto-setup C/C++ debugging on C/C++ files"
     })
-    
+
     -- Also trigger on filetype event
     vim.api.nvim_create_autocmd("FileType", {
         pattern = {"c", "cpp"},
@@ -309,8 +351,8 @@ end
 local asm_debug_ok, asm_debug = pcall(require, "config.plugin-config.assembly-debug")
 if asm_debug_ok then
     -- vim.notify("✅ Assembly language support loaded", vim.log.levels.DEBUG)
-    
-    -- Setup autocmd for Assembly files only  
+
+    -- Setup autocmd for Assembly files only
     local asm_configured = false
     vim.api.nvim_create_autocmd("FileType", {
         pattern = {"asm", "nasm"},
@@ -331,7 +373,7 @@ end
 -- Enhanced DAP quick setup based on filetype
 vim.api.nvim_create_user_command('DapQuickSetup', function()
     local filetype = vim.bo.filetype
-    
+
     if filetype == "python" then
         if python_debug_ok then
             python_debug.auto_debug_setup()
@@ -342,7 +384,7 @@ vim.api.nvim_create_user_command('DapQuickSetup', function()
         if cpp_debug_ok then
             local success = cpp_debug.configure_dap_cpp()
             if success then
-                vim.notify("✅ C/C++ debugging configured successfully", vim.log.levels.INFO)
+                -- vim.notify("✅ C/C++ debugging configured successfully", vim.log.levels.DEBUG)
             else
                 vim.notify("❌ Failed to configure C/C++ debugging", vim.log.levels.ERROR)
             end
@@ -355,11 +397,11 @@ vim.api.nvim_create_user_command('DapQuickSetup', function()
         else
             vim.notify("⚠️ Assembly debug module not available", vim.log.levels.WARN)
         end
-    elseif filetype == "javascript" or filetype == "typescript" or 
+    elseif filetype == "javascript" or filetype == "typescript" or
            filetype == "javascriptreact" or filetype == "typescriptreact" then
-        vim.notify("🚀 JavaScript/TypeScript debugging ready", vim.log.levels.INFO)
+        vim.notify("🚀 JavaScript/TypeScript debugging ready", vim.log.levels.DEBUG)
     else
-        vim.notify("🔧 Basic debugging setup for " .. filetype, vim.log.levels.INFO)
+        vim.notify("🔧 Basic debugging setup for " .. filetype, vim.log.levels.DEBUG)
     end
 end, { desc = 'Quick debug setup based on filetype' })
 
@@ -367,17 +409,17 @@ end, { desc = 'Quick debug setup based on filetype' })
 vim.api.nvim_create_user_command('DapStatus', function()
     local dap = require('dap')
     local filetype = vim.bo.filetype
-    
+
     print("=== DAP Status ===")
     print("Current filetype: " .. filetype)
     print("Available configurations:")
-    
+
     for lang, configs in pairs(dap.configurations) do
         if configs and #configs > 0 then
             print("  " .. lang .. ": " .. #configs .. " configuration(s)")
         end
     end
-    
+
     if filetype and dap.configurations[filetype] then
         print("\nCurrent filetype (" .. filetype .. ") has " .. #dap.configurations[filetype] .. " configuration(s)")
     else
@@ -408,15 +450,11 @@ if cpp_debug_ok then
     vim.keymap.set('n', '<leader>dc', function()
         local success = cpp_debug.configure_dap_cpp()
         if success then
-            vim.notify("✅ C/C++ debugging configured successfully", vim.log.levels.INFO)
+            -- vim.notify("✅ C/C++ debugging configured successfully", vim.log.levels.DEBUG)
         else
             vim.notify("❌ Failed to configure C/C++ debugging", vim.log.levels.ERROR)
         end
     end, { desc = 'Configure C/C++ debugging (GDB)' })
-    vim.keymap.set('n', '<leader>df', cpp_debug.force_recompile_cpp, { desc = 'Force recompile C/C++ with debug info' })
-    vim.keymap.set('n', '<leader>dt', cpp_debug.debug_cpp_interactive, { desc = 'Debug C/C++ (Interactive/External Terminal)' })
-    vim.keymap.set('n', '<leader>cb', cpp_debug.build_project, { desc = 'Build C/C++ project' })
-    vim.keymap.set('n', '<leader>cc', cpp_debug.clean_build, { desc = 'Clean C/C++ build' })
 end
 
 -- Enhanced Assembly debugging keybindings
