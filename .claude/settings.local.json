@@ -14,7 +14,8 @@
       "Bash(gdb:*)",
       "Bash(lldb:*)",
       "Bash(/usr/lib/llvm-18/bin/lldb-dap:*)",
-      "Bash(grep:*)"
+      "Bash(grep:*)",
+      "Bash(bundle exec:*)"
     ],
     "deny": []
   }

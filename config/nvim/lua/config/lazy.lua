@@ -642,6 +642,9 @@ require("lazy").setup({
     keys = {
       { "<leader>z", function() require("maximize").toggle() end, desc = "Toggle maximize window" },
     },
+    config = function()
+      require("maximize").setup()
+    end,
   },
 
   -- ============================================================================
@@ -814,10 +817,10 @@ require("lazy").setup({
     config = function()
       -- Disable default key mappings
       vim.g.vim_markdown_no_default_key_mappings = 0
-      -- Enable folding
-      vim.g.vim_markdown_folding_disabled = 0
-      vim.g.vim_markdown_folding_style_pythonic = 1
-      vim.g.vim_markdown_folding_level = 2
+      -- Disable folding
+      vim.g.vim_markdown_folding_disabled = 1
+      -- vim.g.vim_markdown_folding_style_pythonic = 1
+      -- vim.g.vim_markdown_folding_level = 2
       -- Table of contents
       vim.g.vim_markdown_toc_autofit = 1
       -- Conceal settings

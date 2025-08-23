@@ -208,7 +208,10 @@ if ufo_ok then
     ufo.setup({
         provider_selector = function(bufnr, filetype, buftype)
             -- Provider selection from original config (lines 2325-2337)
-            if filetype == 'python' then
+            if filetype == 'markdown' then
+                -- Disable UFO folding for markdown files
+                return ''
+            elseif filetype == 'python' then
                 return {'treesitter', 'indent'}
             elseif filetype == 'javascript' or filetype == 'typescript' or 
                    filetype == 'typescriptreact' or filetype == 'javascriptreact' then
@@ -362,17 +365,7 @@ if signature_ok then
     vim.notify("✅ LSP Signature configured", vim.log.levels.DEBUG)
 end
 
--- ============================================================================
--- Maximize Plugin Configuration (from original line 337-338)
--- ============================================================================
-local maximize_ok, maximize = pcall(require, "maximize")
-if maximize_ok then
-    maximize.setup()
-    -- Keymap from original config
-    vim.keymap.set('n', '<leader>z', "<cmd>lua require('maximize').toggle()<CR>", 
-                  { noremap = true, silent = true, desc = 'Toggle maximize window' })
-    vim.notify("✅ Maximize plugin configured", vim.log.levels.DEBUG)
-end
+-- Note: Maximize plugin now configured in lazy.lua with proper lazy loading
 
 -- ============================================================================
 -- Set Colorscheme (from original was gruvbox)

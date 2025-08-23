@@ -106,8 +106,14 @@ vim.api.nvim_create_autocmd("FileType", {
     vim.opt_local.wrap = true
     vim.opt_local.linebreak = true
     vim.opt_local.spell = true
-    vim.opt_local.conceallevel = 2
-    vim.opt_local.concealcursor = 'nc'
+    vim.opt_local.conceallevel = 0
+    vim.opt_local.concealcursor = ''
+    
+    -- Configure folding for markdown files
+    vim.opt_local.foldenable = true
+    vim.opt_local.foldmethod = 'manual'  -- 只允许手动折叠
+    vim.opt_local.foldlevel = 99         -- 默认展开所有内容
+    vim.opt_local.foldlevelstart = 99    -- 打开文件时展开所有内容
   end,
   desc = "Markdown specific keymaps and settings",
 })
