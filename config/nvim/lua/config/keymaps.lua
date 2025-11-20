@@ -38,6 +38,24 @@ map('n', '<leader>l', ':vertical resize +4<CR>', { desc = 'Increase window width
 map('n', '<leader>;', '<C-w>=', { desc = 'Equalize window sizes' })
 
 -- ============================================================================
+-- Window Maximization (Simple and Reliable Alternative)
+-- ============================================================================
+-- Simple window maximize toggle using native Vim commands
+local maximized = false
+local function toggle_maximize()
+  if maximized then
+    vim.cmd('wincmd =')  -- Equalize all windows
+    maximized = false
+  else
+    vim.cmd('resize 999')        -- Maximize height
+    vim.cmd('vertical resize 999') -- Maximize width  
+    maximized = true
+  end
+end
+
+map('n', '<leader>z', toggle_maximize, { desc = 'Toggle maximize window' })
+
+-- ============================================================================
 -- Buffer Navigation
 -- ============================================================================
 map('n', '<S-l>', ':bnext<CR>', { desc = 'Next buffer' })

@@ -189,7 +189,7 @@ mlproject() {
         echo "用法: mlproject <项目名>"
         return 1
     fi
-    
+
     mkdir -p "$1"/{data,notebooks,src,models,configs,tests}
     cd "$1"
     uv init
@@ -201,7 +201,7 @@ models/*.pkl
 .env
 .DS_Store
 *.log" > .gitignore
-    
+
     echo "✅ ML项目 '$1' 创建成功！"
     echo "📁 目录结构: data/ notebooks/ src/ models/ configs/ tests/"
     echo "🚀 使用 'uv add pandas numpy scikit-learn' 添加依赖"
@@ -237,8 +237,27 @@ typeset -U PATH LD_LIBRARY_PATH MANPATH FPATH
 # 现在可以安全地添加路径，不用担心重复
 export PATH="/snap/bin:$HOME/.local/bin:$PATH"
 export PATH="/opt/nvim-linux-x86_64/bin:${PATH}"
+#
+# ==========================================
+# RTX 5090 / Blackwell CUDA 开发环境配置
+# ==========================================
 export PATH="/usr/local/cuda/bin:${PATH}"
 export LD_LIBRARY_PATH="/usr/local/cuda/lib64:${LD_LIBRARY_PATH}"
+#
+# ---------- CUDA 缓存相关 ----------
+export CUDA_CACHE_PATH="$HOME/.cuda_cache"      # NVCC编译缓存路径
+export CUDA_CACHE_MAXSIZE=4294967296           # 4GB缓存大小 (磁盘，不占显存)
+export CUDA_CACHE_DISABLE=0                     # 0=启用缓存，1=禁用
+
+# ---------- GPU 可见性 ----------
+export CUDA_DEVICE_ORDER=PCI_BUS_ID             # 按 PCI 物理顺序选择 GPU
+export CUDA_VISIBLE_DEVICES=0                   # 仅使用第一块 GPU
+
+# ---------- NVCC 编译器相关 ----------
+export CUDA_NVCC_FLAGS="-arch=sm_120"
+
+# currently using k3s within wsl2
+export KUBECONFIG=~/.kube/config
 
 # MicroK8s
 if command -v microk8s &> /dev/null; then
@@ -260,3 +279,20 @@ alias clr="claude --resume"
 
 alias claude="/home/hank/.claude/local/claude"
 export PATH="/home/hank/.claude/local:$PATH"
+
+# uv shell autocompletion
+eval "$(uv generate-shell-completion zsh)"
+eval "$(uvx --generate-shell-completion zsh)"
+
+# ros2 robotics practice
+. ~/ros2_jazzy/install/setup.zsh
+. ~/ros2_ws/install/setup.zsh
+
+export AWS_ACCESS_KEY_ID=admin
+export AWS_SECRET_ACCESS_KEY=admin
+export AWS_ENDPOINT_URL=http://localhost:8333
+
+# go
+export PATH=$PATH:/usr/local/go/bin
+export GOPATH=$HOME/go
+export PATH=$PATH:$GOPATH/bin
