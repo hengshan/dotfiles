@@ -22,3 +22,4 @@ Thumbs.db
 
 # Shell history
 .zsh_history
+config/nvim/lazy-lock.json
