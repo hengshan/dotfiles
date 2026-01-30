@@ -900,6 +900,7 @@ require("lazy").setup({
     version = "*",
     keys = {
       { "<C-\\>", "<cmd>ToggleTerm<cr>", desc = "Toggle Terminal" },
+      { "<leader>t", "<cmd>ToggleTerm direction=horizontal<cr>", desc = "Toggle Terminal (bottom)" },
       { "<leader>tf", "<cmd>ToggleTerm direction=float<cr>", desc = "Toggle Float Terminal" },
       { "<leader>th", "<cmd>ToggleTerm direction=horizontal<cr>", desc = "Toggle Horizontal Terminal" },
       { "<leader>tv", "<cmd>ToggleTerm direction=vertical<cr>", desc = "Toggle Vertical Terminal" },

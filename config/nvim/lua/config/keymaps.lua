@@ -105,8 +105,11 @@ map('n', '<leader>x', '<cmd>!chmod +x %<CR>', { desc = 'Make file executable' })
 -- ============================================================================
 -- Terminal
 -- ============================================================================
--- Open terminal at bottom (from original line 2566)
-map('n', '<leader>t', ':belowright split | terminal<CR>', { desc = 'Open terminal at bottom' })
+-- Note: <leader>t is now defined in lazy.lua for ToggleTerm (lazy loading)
+-- <leader>t - Toggle terminal at bottom (horizontal split)
+-- <leader>tf - Toggle floating terminal
+-- <leader>th - Toggle horizontal terminal
+-- <leader>tv - Toggle vertical terminal
 
 -- Terminal escape (from original line 2571)
 map('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' })

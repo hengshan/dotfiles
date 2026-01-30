@@ -49,7 +49,7 @@ source $ZSH/oh-my-zsh.sh
 export EDITOR='nvim'
 export VISUAL='nvim'
 set -o vi # Enable vi keybindings for Zsh
-cd ~
+# cd ~  # Commented out - don't auto-change to home directory
 
 # ===== 开发环境配置 =====
 
@@ -137,14 +137,14 @@ mkcd() {
     mkdir -p "$1" && cd "$1"
 }
 
-# 快速查找文件
+# 快速查找文件（不区分大小写）
 ff() {
-    find . -name "*$1*" -type f
+    find . -iname "*$1*" -type f
 }
 
-# 快速查找目录
+# 快速查找目录（不区分大小写）
 fd() {
-    find . -name "*$1*" -type d
+    find . -iname "*$1*" -type d
 }
 
 # 快速 grep
@@ -296,3 +296,19 @@ export AWS_ENDPOINT_URL=http://localhost:8333
 export PATH=$PATH:/usr/local/go/bin
 export GOPATH=$HOME/go
 export PATH=$PATH:$GOPATH/bin
+
+# terraform autocompletion
+autoload -U +X bashcompinit && bashcompinit
+complete -o nospace -C /usr/bin/terraform terraform
+
+# bun completions
+[ -s "/home/hank/.bun/_bun" ] && source "/home/hank/.bun/_bun"
+alias moltbot=clawdbot
+
+# pnpm
+export PNPM_HOME="/home/hank/.local/share/pnpm"
+case ":$PATH:" in
+  *":$PNPM_HOME:"*) ;;
+  *) export PATH="$PNPM_HOME:$PATH" ;;
+esac
+# pnpm end

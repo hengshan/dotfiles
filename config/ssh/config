@@ -1,5 +1,5 @@
 Host szls
-    HostName 192.168.10.2
+    HostName 192.168.0.7
     User hank
     Port 22
     IdentityFile ~/.ssh/id_ed25519

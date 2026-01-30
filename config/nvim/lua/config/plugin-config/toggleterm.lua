@@ -53,7 +53,7 @@ toggleterm.setup({
     border = 'curved', -- 'single' | 'double' | 'shadow' | 'curved' | ... other options supported by win open
     width = math.floor(vim.o.columns * 0.8),
     height = math.floor(vim.o.lines * 0.8),
-    winblend = 10,
+    winblend = 0,  -- 0 = no transparency, 100 = fully transparent
     zindex = 50,
     title_pos = 'center', -- 'left' | 'center' | 'right'
   },
@@ -121,6 +121,7 @@ local lazygit = Terminal:new({
     border = "curved",
     width = math.floor(vim.o.columns * 0.9),
     height = math.floor(vim.o.lines * 0.9),
+    winblend = 0,  -- No transparency for better readability
   },
   -- Function to run on opening the terminal
   on_open = function(term)
